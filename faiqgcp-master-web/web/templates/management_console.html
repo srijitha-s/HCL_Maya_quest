@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block title %}Management Console{% endblock %}
+
+	{% block script %}
+<!-- <link rel="stylesheet" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"/>
+<script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script> -->
+
+	<script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}"/>
+	<script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/management.css') }}">
+	<style type="text/css">
+		body{
+			font-family: "Times New Roman", Times, serif;
+		}
+/*		H1 {
+			color: white;
+			background-color: #42c5f4;
+			text-align: center;
+		}*/
+/* Set height of body and the document to 100% to enable "full page tabs" */
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial;
+}
+
+
+	</style>
+{% endblock %}
+	
+{% block content %}
+	<h1>Management Console</h1>
+
+
+<input type="button" class="tablink" onclick="openPage('Topics', this, '#2b434f')" id="defaultOpen" value="Topics"></input>
+<input type="button" class="tablink" onclick="openPage('Questions', this, '#638270')"  value="Questions"></input>
+<input type="button" class="tablink" onclick="openPage('Settings', this, '#bcc98e')" value="Settings"></input>
+<input type="button" class="tablink" onclick="openPage('About', this, '#eeee99')" value="About"></input>
+ <div class="alert" style="display: none">
+  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+  This is an alert box.
+</div> 
+
+<div id="Topics" class="tabcontent">
+  	<form id="topics">
+		{% for topic in topics %}
+			<input style="width: 80%; margin: 0.6em; " name="{{ topic.id }}" value="{{ topic.Name }}"></input>
+		{% endfor %}
+		<br>
+	 	<input type="submit" value="submit" style=" margin: 0.6em;" id="update_topics"/> <input type="button" id="add_topic" value="Add New Topic"></button>
+	</form>
+</div>
+
+<div id="Questions" class="tabcontent">
+	<form id="selected_topics" action="/upload_questions" method="post">
+		<div class="grid-container">
+			<div>Step 1: Select the topic:</div>
+
+			<div id="topic_list">
+				<select name="selected_topics" style="width: 100%">
+				{% for topic in topics %}
+					<option value="{{ topic.id }}" >{{ topic.Name }}</option>
+				{% endfor %}
+				</select>
+			</div>
+			<div>
+		 		<input id="show_question_options" type="button" value="Show Options" style="width: 100%"/>
+		 	</div>
+		 </div>
+
+		<div id="question_action" style="display: none">
+			Step 2: 
+			<input type="button" id="display_questions" value="Show Questions" /> 
+			or
+			  <input type="button" id="upload_file_select" for="files" value="Upload Bulk Questions" />
+			  <input id="files" style="visibility:hidden; width: 1em" type="file" accept=".csv, .ods,.xls,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/vnd.oasis.opendocument.spreadsheet">
+			<a href="{{ url_for('static', filename='data/template_bulk_import.ots') }}" style="color: #c7e9b4">Template for bulk Upload</a>
+		</div>
+	</form>
+
+ 	<div id="question_area" style="display: none; background: #c7e9b4">
+	 	<h3>All Questions for: {{ topic_name }}</h3>
+
+		<table id="questions"  style="width:100%">
+	        <thead>
+	            <tr>
+	                <th>Q. ID</th>
+	                <th >Question</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+				
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
+<div id="Settings" class="tabcontent">
+  <p>$$TODO$$, Comming up in next release</p>
+</div>
+
+<div id="About" class="tabcontent">
+  <p>Tool for learning GCP using Questions</p>
+</div>
+
+<script> 	
+	$("#display_questions").click(function(){
+		if ( $.fn.dataTable.isDataTable( '#questions' ) ) {
+			table = $('#questions').DataTable();
+			table.destroy();
+		};
+		$('#questions').dataTable( {
+			"ajax": {
+				"url": "/get_all_questions:" + $("#selected_topics option:selected" ).attr('value'),
+				"dataSrc": function ( json ) {
+					// console.log(json);
+					for ( var i=0, ien=json.length ; i<ien ; i++ ) {
+						json[i][1] = '<a target="_blank" href="/edit_question:'+json[i][0]+'">'+json[i][1]+'</a>';
+					}
+					return json;
+				}
+			}
+		} );
+		$("#question_area").show();
+	});
+
+	$("#upload_file_select").click(function(){
+		$("#files").click();
+	});
+	$("#files").change(function(){
+		// console.log($("#files"));
+		var data = new FormData();
+		data.append("topic_id", $("#selected_topics option:selected" ).text());
+
+		// Display the key/value pairs
+		// for (var pair of data.entries()) {
+		//     console.log(pair[0]+ ', ' + pair[1]); 
+		// };
+		jQuery.each(jQuery('#files')[0].files, function(i, file) {
+		    data.append('file_'+i, file);
+		});
+		// Display the key/value pairs
+		// for (var pair of data.entries()) {
+		//     console.log(pair[0]+ ', ' + pair[1]); 
+		// };
+		var action = "/upload_questions";
+		$.ajax({
+			type: "POST",
+			url: action,
+			data: data,    
+			processData: false,
+    		contentType: false,
+		  	success: success
+		})
+	});
+
+	$("#show_question_options").click(function(){
+		$("#question_action").show()
+	});
+
+	function success(response){
+		console.log(response.result);
+		if (response.result == true){
+			alert(response.msg);
+		}
+		else{
+			alert("Failed: "+response.msg)
+		}
+	};
+
+	$("#update_topics").click(function(){
+		var action = "/update_topics";
+		var myform = document.getElementById("topics");
+    	var fd = new FormData(myform );
+		$.ajax({
+			type: "POST",
+			url: action,
+			data: fd,    
+			processData: false,
+    		contentType: false,
+		  	success: success
+		})
+	});
+	
+	$("#add_topic").click(function() {
+		var new_topic = prompt("Please enter new topic to add", 
+		            "GCP "); 
+		if (new_topic != null) { 
+			var url = "/add_topic";
+			var data = {"topic": new_topic};
+			$.ajax({
+			  type: "POST",
+			  url: url,	
+			  data: data,
+			  success: success
+			});
+		};
+	});
+
+	function openPage(pageName,elmnt,color) {
+	  var i, tabcontent, tablinks;
+	  tabcontent = document.getElementsByClassName("tabcontent");
+	  for (i = 0; i < tabcontent.length; i++) {
+	    tabcontent[i].style.display = "none";
+	  }
+	  tablinks = document.getElementsByClassName("tablink");
+	  for (i = 0; i < tablinks.length; i++) {
+	    tablinks[i].style.backgroundColor = "";
+	  }
+	  document.getElementById(pageName).style.display = "block";
+	  elmnt.style.backgroundColor = color;
+	}
+
+	// Get the element with id="defaultOpen" and click on it
+	document.getElementById("defaultOpen").click();
+</script>
+{% endblock %}

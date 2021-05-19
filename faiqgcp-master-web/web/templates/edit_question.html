@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="en">
+<head>
+	<script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+
+	<style type="text/css">
+		body{
+			font-family: "Times New Roman", Times, serif;
+		}
+		H1 {
+			color: white;
+			background-color: #42c5f4;
+			text-align: center;
+		}
+		#zone {
+			background-color: #f9fdff;
+			border-color:  #42c5f4;
+			border-width: 20em;
+		}
+		#question {
+			padding: 1em;
+			background-color: #d6efff;
+			border-color: #42c5f4;
+			border-style: solid;
+			align-self: center;
+			size: 80%;
+			font-size: 1.2em;
+
+			color: #004c7c;
+			border-radius: 0.4em;
+		}
+
+		#options {
+			margin-top: 1em;
+			background-color: #d6efff;
+			border-color: #42c5f4;
+			border-style: solid;
+			align-self: center;
+			size: 80%;
+			color: #004c7c;
+			border-radius: 0.4em;
+		}
+
+		#action_zone {
+			margin-top: 1em;
+			padding: 1em;
+			background-color: #e0e0e0;
+			border-color: #2d2d2d;
+			border-style: solid;
+			align-self: center;
+			size: 80%;
+			color: #004c7c;
+			border-radius: 0.4em;
+		}
+	</style>
+</head>
+<body>
+	<h1>Edit Question</h1>
+	<form id="save_question" action = "/save_question" method = "POST">
+		<b>Question:</b><br> 
+		<textarea rows="8"  id="question" name="{{question.id}}" value="" style="width: 75%;">{{question.question}}</textarea> 
+
+		<p style="text-decoration: bold">Ans:</p>
+		
+		<div id="choices">
+			{% for choice in choices %}
+				<div class="options"><input type='checkbox' for='{{choice.id}}' {% if choice.answer %}checked{% endif %}  />
+					<input type='text' id='{{choice.id}}' value='{{choice.choice}}' style="width: 90%" />
+				</div>
+			{% endfor %}
+
+		</div>
+
+		 <input type="submit" value="Save" />
+	</form>
+	<script>
+		$(function() { //shorthand document.ready function
+			function success(response){
+				console.log(response.result);
+				if (response.result == true){
+					alert(response.msg);
+				}
+				else{
+					alert("Failed: "+response.msg)
+				}
+			};
+		    $('#save_question').on('submit', function(e) { //use on if jQuery 1.7+
+		        e.preventDefault();  
+		        var question = {
+		            id: $("#question").attr("name"),
+		            question: $("#question").val()
+		        };
+		        var data = {"question": question};
+		        var choices = [];
+		        $(".options").each(function(){
+		        	var _ch = {
+		        		"ans": $(this).children('input[type="checkbox"]').is(":checked"),
+		        		"choice": $(this).children('input[type="text"]').val(),
+		        		"id": $(this).children('input[type="text"]').attr("id")
+		        	};
+		        	choices.push(_ch);
+		        });
+		        data['choices'] = choices;
+		        var url = "save_question";
+        		$.ajax({
+				  type: "POST",
+				  url: url,
+				  data: JSON.stringify(data),
+				  success: success,
+				  contentType: "application/json; charset=utf-8",
+    				dataType: 'json'
+				});
+		    });
+		});
+	</script>
+</body>
+</html>

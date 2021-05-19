@@ -1,0 +1,93 @@
+<!DOCTYPE html><html lang="en">
+<head>
+	<script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+
+	<style type="text/css">
+		body{
+			font-family: "Times New Roman", Times, serif;
+		}
+		H1 {
+			color: white;
+			background-color: #42c5f4;
+			text-align: center;
+		}
+		#zone {
+			background-color: #f9fdff;
+			border-color:  #42c5f4;
+			border-width: 20em;
+		}
+		#question {
+			padding: 1em;
+			background-color: #d6efff;
+			border-color: #42c5f4;
+			border-style: solid;
+			align-self: center;
+			size: 80%;
+			font-size: 1.2em;
+
+			color: #004c7c;
+			border-radius: 0.4em;
+		}
+
+		#options {
+			margin-top: 1em;
+			background-color: #d6efff;
+			border-color: #42c5f4;
+			border-style: solid;
+			align-self: center;
+			size: 80%;
+			color: #004c7c;
+			border-radius: 0.4em;
+		}
+
+		#action_zone {
+			margin-top: 1em;
+			padding: 1em;
+			background-color: #e0e0e0;
+			border-color: #2d2d2d;
+			border-style: solid;
+			align-self: center;
+			size: 80%;
+			color: #004c7c;
+			border-radius: 0.4em;
+		}
+	</style>
+</head>
+<body>
+	<h1>Please Select Your Quest</h1>
+	<form action = "/start_quest" method = "POST">
+
+	<div id="options">
+		<select name="quests">
+		{% for quest in quests %}
+			<option value="{{ quest.id }}">{{ quest.Name }}</option>
+		{% endfor %}
+		</select>
+	</div>
+	 <input type="submit" value="submit" />
+</form>
+	<script>
+		$(document).ready(function(){
+		$.ajax({
+			url: "/get_quest:{{qid}}"
+			}).then(function(data) {
+				// console.log($("#questions"));
+				// console.log(data['question']);
+				var s = "";
+				// var str = "<p><label><input type='checkbox' id='' /><span>Yellow</span></label></p>";
+				$("#question").text(data['question']);
+				$.each(data['choices'], function(idx, val){
+					s = s + "<p><label><input type='checkbox' id='" + val[0]
+						+ "' /><span>" + val[1] + "</span></label></p>";
+				})
+				$('#options').html(s);
+			   // $('#options').append(data.id);
+			   // $('.greeting-content').append(data.content);
+			});
+		});
+		// $("#validate").click(function(){
+		// 	console.log("Validate the values")
+		// })
+	</script>
+</body>
+</html>

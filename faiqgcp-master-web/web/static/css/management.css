@@ -1,0 +1,123 @@
+
+
+/* Style tab links */
+.tablink {
+  background-color: #555;
+  color: white;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 17px;
+  width: 25%;
+}
+
+.tablink:hover {
+  background-color: #225ea8;
+}
+
+/* Style the tab content (and add height:100% for full page content) */
+.tabcontent {
+  color: white;
+  display: none;
+  padding: 100px 20px;
+  height: 100%;
+}
+
+#Topics {background-color: #2b434f;}
+#Questions {background-color: #638270;}
+#Settings {background-color: #bcc98e;}
+#About {background-color: #eeee99;}
+
+#question_area {color: #03045e;}
+ /* The alert message box */
+
+.alert {
+  padding: 20px;
+  background-color: #f44336; /* Red */
+  color: white;
+  margin-bottom: 15px;
+}
+
+/* The close button */
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+  color: black;
+} 
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 18% auto 10%;
+  grid-gap: 0.5em;
+  background-color: #2196F3;
+  padding: 0.5em;
+}
+
+.grid-container > div {
+  <!-- background-color: rgba(255, 255, 255, 0.8); -->
+  text-align: center;
+  <!-- padding: 20px 0; -->
+}
+
+.custom-button{
+  background: #f7f7f7; 
+  padding: 8px;
+  border: 1px solid #e3e3e3; 
+  border-radius: 5px; 
+  border: 1px solid #ccc; 
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: black;
+}
+<!-- 
+$('form button input[type="button"]').on("click",function(e){
+	console.log("Fom button clicked")
+    e.preventDefault();
+}); -->
+<!-- http://colrd.com/palette/19057/
+#ffffd9    #edf8b1    #c7e9b4    
+#7fcdbb    #41b6c4    #1d91c0    
+#225ea8    #0c2c84    
+
+
+
+#eeee99    #ede059    #bcc98e    
+#638270    #2b434f    #0c2538    
+
+ -->
+
+
+
+<!-- 
+--navy-blue: #03045e ff;
+--dark-cornflower-blue: #023e8a ff;
+--star-command-blue: #0077b6 ff;
+--blue-green: #0096c7 ff;
+--cerulean-crayola: #00b4d8 ff;
+--sky-blue-crayola: #48cae4 ff;
+--sky-blue-crayola-2: #90e0ef ff;
+--blizzard-blue: #ade8f4 ff;
+--powder-blue: #caf0f8 ff;
+--navy-blue: rgba(3, 4, 94, 1);
+--dark-cornflower-blue: rgba(2, 60, 136, 1);
+--star-command-blue: rgba(0, 119, 184, 1);
+--blue-green: rgba(0, 149, 199, 1);
+--cerulean-crayola: rgba(0, 179, 214, 1);
+--sky-blue-crayola: rgba(73, 202, 228, 1);
+--sky-blue-crayola-2: rgba(143, 225, 239, 1);
+--blizzard-blue: rgba(174, 232, 244, 1);
+--powder-blue: rgba(201, 240, 248, 1);
+ -->

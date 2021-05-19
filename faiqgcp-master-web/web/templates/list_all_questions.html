@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Manage Questions{% endblock %}
+{% block script %}
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"/>
+<script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+{% endblock %}
+
+{% block css %}
+body{
+			font-family: "Times New Roman", Times, serif;
+		}
+		H1 {
+			color: white;
+			background-color: #42c5f4;
+			text-align: center;
+		}
+{% endblock %}
+
+{% block content %}
+
+
+	<h1>All Questions for: {{ topic_name }}</h1>
+
+	<table id="questions" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th >Question</th>
+                <th style="width: 20%">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+		{% for quest in questions %}
+            <tr>
+            	<td >{{ quest[0] }}</td>
+            	<td> <a href="/edit_question?id={{ quest[1]}}">Edit</a></td>
+            </tr>
+		{% endfor %}
+		</tbody>
+	</table>
+		</select>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+		    $('#questions').DataTable({"ordering": false});
+		} );
+	</script>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Continue the Quest ...{% endblock %}
+
+{% block css %}
+	#zone {
+		background-color: #f9fdff;
+		border-color:  #42c5f4;
+		border-width: 20em;
+	}
+	#question {
+		padding: 1em;
+		background-color: #d6efff;
+		border-color: #42c5f4;
+		border-style: solid;
+		align-self: center;
+		size: 80%;
+		font-size: 1.2em;
+
+		color: #004c7c;
+		border-radius: 0.4em;
+	}
+
+	#options {
+		margin-top: 1em;
+		background-color: #d6efff;
+		border-color: #42c5f4;
+		border-style: solid;
+		align-self: center;
+		size: 80%;
+		color: #004c7c;
+		border-radius: 0.4em;
+	}
+
+	#action_zone {
+		margin-top: 1em;
+		padding: 1em;
+		height: 2em;
+		background-color: #e0e0e0;
+		border-color: #2d2d2d;
+		border-style: solid;
+		align-self: center;
+		size: 80%;
+		color: #004c7c;
+		border-radius: 0.4em;
+	}
+	.correct {
+		color: green;
+	}
+	.wrong {
+		color: #f96800;
+		font-weight: 2em;
+	}
+	
+
+{% endblock %}
+
+	{% block content %}
+	<h1>Quiz</h1>
+	<form>
+		<div id="zone">
+			<div id="result"></div>
+			<div id="question"></div>
+			<div id="options">
+			</div>
+			<div id="action_zone">
+				<div id="validate" class="button" style="width: 30%; float: left">Validate</div>
+				<div class="button" style="width: 30%; float: right" onclick="window.location.href = '/next_q'">Next</div>
+			</div>
+		</div>
+	</form>
+{% endblock %}
+
+{% block jsbody %}
+
+		$(document).ready(function(){
+			$.ajax({
+				url: "/get_quest:{{ qid }}"
+			}).then(function(data) {
+				var s = "";
+				$("#question").text(data['question']);
+				$.each(data['choices'], function(idx, val){
+					s = s + "<p><label><input type='checkbox' id='" + val[0]
+						+ "' /><span>" + val[1] + "</span></label></p>";
+				})
+				$('#options').html(s);
+			});
+		});
+		$("#validate").click(function(){
+			$.ajax({
+				url: "/validate:{{ qid }}"
+			}).then(function(data) {
+				console.log(data)
+				var answers = $("input:checkbox:checked").map(function(){
+			      return parseInt($(this).attr('id'));
+			    }).get();
+			 //    a.forEach(function(el) {
+				//     if(b.indexOf(el) > 0) console.log(b.indexOf(el));
+				//     else console.log("b does not contain " + el);
+				// });
+				console.log("answers", answers)
+
+				var flg = true;
+				var correct_ans = [];
+				$.each(data, function(indx, val){
+					correct_ans.push(val[0]);
+					console.log(val[0], answers);
+					console.log($.inArray(val[0], answers));
+					if($.inArray(val[0], answers) < 0){
+						flg = false;
+						$("input:checkbox[id='"+val[0]+"'] + span").addClass("wrong");
+					}
+				});
+				var difference = $(correct_ans).not(answers).get();
+				var other = $(answers).not(correct_ans).get();
+				console.log("difference", difference, "other", other, "correct_ans", correct_ans, "answers", answers);
+				$.each(other, function(indx, val){
+					console.log("val", val);
+					flg = false;
+					$("input:checkbox[id='"+val+"'] + span").addClass("wrong");
+				});
+				if(flg == false){
+					$("#result").text("Wrong Answer(s) provided");
+				}else{
+					$("#result").text("Correct");
+				}
+
+			});
+			console.log("Validate the")
+		})
+
+{% endblock %}
