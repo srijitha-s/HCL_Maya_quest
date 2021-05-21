@@ -6,3 +6,4 @@ pyexcel
 pyexcel-xlsx
 pyexcel-ods
 uwsgi
+json
