@@ -16,6 +16,10 @@ runtime: python
 env: flex
 entrypoint: gunicorn -b :$PORT main:app
 
+#env_variables:
+#  REDISHOST: '10.178.16.3'
+#  REDISPORT: '6379'
+
 runtime_config:
   python_version: 3
 
