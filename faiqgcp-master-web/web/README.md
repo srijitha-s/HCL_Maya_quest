@@ -16,7 +16,7 @@ docker tag image_name gcr.io/project_name/image_name
 
 docker images
 
-# push image to container registry
+#push image to container registry**
 docker push gcr.io/project_name/image_name
 
 Now check  conatiner registry in GCP console for image
