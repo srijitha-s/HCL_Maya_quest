@@ -7,3 +7,4 @@ pyexcel-xlsx
 pyexcel-ods
 uwsgi
 json
+gunicorn
